@@ -13,6 +13,35 @@ class DungeonMap extends Component {
 		var playerStartingCol = Math.floor(Math.random() * (NUM_OF_MAP_COLUMNS));
 
 		this.state = { playerCurrentLocation: [playerStartingRow, playerStartingCol] };
+	
+		this.handlePlayerMove = this.handlePlayerMove.bind(this);
+	}
+
+	componentDidMount() {
+		window.onkeydown = this.handlePlayerMove;
+	}
+
+	handlePlayerMove(event) {
+		event.preventDefault();
+
+		var buttonPressed = event.keyCode;
+
+		switch(buttonPressed) {
+			case 37:
+				console.log("player moves left");
+				break;
+			case 38:
+				console.log("player moves up");
+				break;
+			case 39:
+				console.log("player moves right");
+				break;
+			case 40:
+				console.log("player moves down");
+				break;
+		}
+		
+
 	}
 
 	render() {
