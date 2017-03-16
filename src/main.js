@@ -11,7 +11,7 @@ class App extends Component {
 	render() {
 		return (
 		  <div>
-		    <DungeonMap />
+		    <DungeonMap numMapRows={20} numMapCols={20}/>
 		  </div>
 		);
 	}

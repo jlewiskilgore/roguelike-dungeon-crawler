@@ -12,9 +12,10 @@ class DungeonMap extends Component {
 		var playerStartingRow = Math.floor(Math.random() * (NUM_OF_MAP_ROWS));
 		var playerStartingCol = Math.floor(Math.random() * (NUM_OF_MAP_COLUMNS));
 
-		this.state = { playerCurrentLocation: [playerStartingRow, playerStartingCol] };
+		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow] };
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
+		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
 	}
 
 	componentDidMount() {
@@ -28,27 +29,56 @@ class DungeonMap extends Component {
 
 		switch(buttonPressed) {
 			case 37:
-				console.log("player moves left");
+				this.updatePlayerPosition(-1, 0);
 				break;
 			case 38:
-				console.log("player moves up");
+				this.updatePlayerPosition(0, -1);
 				break;
 			case 39:
-				console.log("player moves right");
+				this.updatePlayerPosition(1, 0);
 				break;
 			case 40:
-				console.log("player moves down");
+				this.updatePlayerPosition(0, 1);
 				break;
 		}
-		
+	}
 
+	updatePlayerPosition(moveX, moveY) {
+		var currPlayerCol = this.state.playerCurrentLocation[0];
+		var currPlayerRow = this.state.playerCurrentLocation[1];
+		var newPlayerCol;
+		var newPlayerRow;
+
+		// Update player's x-coordinate (column - left/right) position
+		if(moveX < 0 && currPlayerCol !== 0) {
+			newPlayerCol = currPlayerCol + moveX;
+		}
+		else if(moveX > 0 && currPlayerCol !== (this.props.numMapCols-1)) {
+			newPlayerCol = currPlayerCol + moveX;
+		}
+		else {
+			newPlayerCol = currPlayerCol;
+		}
+
+		// Update player's y-coordinate (row - up/down) position
+		if(moveY < 0 && currPlayerRow !== 0) {
+			newPlayerRow = currPlayerRow + moveY;
+		}
+		else if(moveY > 0 && currPlayerRow !== (this.props.numMapRows-1)) {
+			newPlayerRow = currPlayerRow + moveY;
+		}
+		else {
+			newPlayerRow = currPlayerRow;
+		}
+
+		this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] })
 	}
 
 	render() {
 		console.log(this.state.playerCurrentLocation);
 
-		var playerCurrentRow = this.state.playerCurrentLocation[0];
-		var playerCurrentCol = this.state.playerCurrentLocation[1];
+		var playerCurrentCol = this.state.playerCurrentLocation[0];
+		var playerCurrentRow = this.state.playerCurrentLocation[1];
 
 		var mapRow;
 		var dungeonMap = [];
@@ -56,10 +86,10 @@ class DungeonMap extends Component {
 		var numRows = 20;
 		var numCols = 20;
 
-		for(var i=0; i<numCols; i++) {
+		for(var i=0; i<numRows; i++) {
 			mapRow = [];
-			for(var j=0; j<numRows; j++) {
-				if(i == playerCurrentCol && j == playerCurrentRow) {
+			for(var j=0; j<numCols; j++) {
+				if(i == playerCurrentRow && j == playerCurrentCol) {
 					mapRow.push("	X	");
 				}
 				else {
