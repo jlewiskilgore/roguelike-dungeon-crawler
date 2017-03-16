@@ -4,13 +4,9 @@ class DungeonMap extends Component {
 	constructor(props) {
 		super(props);
 
-		// For testing: Replace these with argument values
-		var NUM_OF_MAP_COLUMNS = 20;
-		var NUM_OF_MAP_ROWS = 20;
-
 		// Set random starting position for player
-		var playerStartingRow = Math.floor(Math.random() * (NUM_OF_MAP_ROWS));
-		var playerStartingCol = Math.floor(Math.random() * (NUM_OF_MAP_COLUMNS));
+		var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
+		var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
 
 		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow] };
 	
@@ -83,8 +79,8 @@ class DungeonMap extends Component {
 		var mapRow;
 		var dungeonMap = [];
 
-		var numRows = 20;
-		var numCols = 20;
+		var numRows = this.props.numMapRows;
+		var numCols = this.props.numMapCols;
 
 		for(var i=0; i<numRows; i++) {
 			mapRow = [];
