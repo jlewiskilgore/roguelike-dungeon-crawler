@@ -28,7 +28,7 @@ class DungeonMap extends Component {
 				this.updatePlayerPosition(-1, 0);
 				// FOR TESTING ONLY:
 				// Pressing left button will lower player health by 1
-				this.props.updatePlayerHealth(-1);
+				this.props.updatePlayerHealth(-1.5);
 				break;
 			case 38:
 				this.updatePlayerPosition(0, -1);

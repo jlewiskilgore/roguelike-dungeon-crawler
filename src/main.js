@@ -18,7 +18,7 @@ class App extends Component {
 		var newHealth = currHealth + healthModification;
 		console.log("newhealth: " + newHealth);
 
-		if(newHealth == 0) {
+		if(newHealth <= 0) {
 			console.log("player is dead...");
 			this.setState({ isPlayerAlive: false });
 		}
