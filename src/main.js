@@ -7,13 +7,25 @@ import './App.sass';
 class App extends Component {
 	constructor(props) {
 		super(props);
+
+		this.state = { playerHealth: 100 };
+
+		this.updatePlayerHealth = this.updatePlayerHealth.bind(this);
+	}
+
+	updatePlayerHealth(healthModification) {
+		var currHealth = this.state.playerHealth;
+		var newHealth = currHealth + healthModification;
+		console.log("newhealth: " + newHealth);
+
+		this.setState({ playerHealth: newHealth });
 	}
 
 	render() {
 		return (
 		  <div id="dungeon-main-component">
-		  	<HealthMeter />
-		    <DungeonMap numMapRows={20} numMapCols={20}/>
+		  	<HealthMeter playerHealth={this.state.playerHealth} />
+		    <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
 		  </div>
 		);
 	}
