@@ -8,7 +8,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { playerHealth: 100 };
+		this.state = { playerHealth: 10, isPlayerAlive: true };
 
 		this.updatePlayerHealth = this.updatePlayerHealth.bind(this);
 	}
@@ -18,16 +18,35 @@ class App extends Component {
 		var newHealth = currHealth + healthModification;
 		console.log("newhealth: " + newHealth);
 
-		this.setState({ playerHealth: newHealth });
+		if(newHealth == 0) {
+			console.log("player is dead...");
+			this.setState({ isPlayerAlive: false });
+		}
+		else {
+			this.setState({ playerHealth: newHealth });
+		}
 	}
 
 	render() {
-		return (
-		  <div id="dungeon-main-component">
-		  	<HealthMeter playerHealth={this.state.playerHealth} />
-		    <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
-		  </div>
-		);
+		var playerIsAlive = this.state.isPlayerAlive;
+
+		if(playerIsAlive) {
+			return (
+			  <div id="dungeon-main-component">
+			  	<HealthMeter playerHealth={this.state.playerHealth} />
+			    <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
+			  </div>
+			);
+		}
+		else {
+			return (
+			  <div id="dungeon-main-component">
+				<h1>PLAYER IS DEAD!</h1>
+				<br/>
+				<h1>GAME OVER!!!!</h1>
+			  </div>
+			);
+		}
 	}
 }
 
