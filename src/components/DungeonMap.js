@@ -73,7 +73,30 @@ class DungeonMap extends Component {
 			newPlayerRow = currPlayerRow;
 		}
 
+		//Check if player moved to health item
+		var foundHealth = this.isHealthItemFound(newPlayerCol, newPlayerRow);
+		if(foundHealth) {
+			this.props.updatePlayerHealth(foundHealth);
+		}
+
 		this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] });
+	}
+
+	isHealthItemFound(spaceCol, spaceRow) {
+		var healthItem = this.state.healthItemLocation;
+
+		if(healthItem !== []) {
+			var healthItemCol = healthItem[0];
+			var healthItemRow = healthItem[1];
+		}
+
+		if(spaceCol == healthItemCol && spaceRow == healthItemRow) {
+			this.setState({ healthItemLocation: [] });
+			return 10; // Health item increases player's health by 10
+		}
+		else {
+			return 0; // no health item found
+		}
 	}
 
 	render() {
