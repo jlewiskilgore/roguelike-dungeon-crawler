@@ -33,8 +33,12 @@ class App extends Component {
 		if(playerIsAlive) {
 			return (
 			  <div id="dungeon-main-component">
-			  	<HealthMeter playerHealth={this.state.playerHealth} />
-			    <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
+			    <div id="main-health-meter">
+			  	  <HealthMeter playerHealth={this.state.playerHealth} />
+			  	</div>
+			  	<div id="dungeon-map">
+			      <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
+			    </div>
 			  </div>
 			);
 		}

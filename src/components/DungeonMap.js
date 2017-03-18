@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MapSpace from './MapSpace';
 
 class DungeonMap extends Component {
 	constructor(props) {
@@ -26,9 +27,11 @@ class DungeonMap extends Component {
 		switch(buttonPressed) {
 			case 37:
 				this.updatePlayerPosition(-1, 0);
+
 				// FOR TESTING ONLY:
 				// Pressing left button will lower player health by 1
-				this.props.updatePlayerHealth(-1.5);
+				// this.props.updatePlayerHealth(-1.5);
+				
 				break;
 			case 38:
 				this.updatePlayerPosition(0, -1);
@@ -89,17 +92,17 @@ class DungeonMap extends Component {
 			mapRow = [];
 			for(var j=0; j<numCols; j++) {
 				if(i == playerCurrentRow && j == playerCurrentCol) {
-					mapRow.push("	X	");
+					mapRow.push(<MapSpace spaceType="player" />);
 				}
 				else {
-					mapRow.push("    -    ");
+					mapRow.push(<MapSpace spaceType="empty" />);
 				}
 			}
 			dungeonMap.push(<div className="map-row">{mapRow}</div>);
 		}
 
 		return (
-			<div id="dungeon-map">
+			<div id="dungeon-map-table">
 			  {dungeonMap}
 			</div>
 		);
