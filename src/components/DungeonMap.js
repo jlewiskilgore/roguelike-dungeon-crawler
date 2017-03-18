@@ -9,7 +9,7 @@ class DungeonMap extends Component {
 		var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
 		var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
 
-		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow] };
+		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], healthItemLocation: [3, 3] };
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -31,7 +31,7 @@ class DungeonMap extends Component {
 				// FOR TESTING ONLY:
 				// Pressing left button will lower player health by 1
 				// this.props.updatePlayerHealth(-1.5);
-				
+
 				break;
 			case 38:
 				this.updatePlayerPosition(0, -1);
@@ -77,10 +77,12 @@ class DungeonMap extends Component {
 	}
 
 	render() {
-		console.log(this.state.playerCurrentLocation);
-
 		var playerCurrentCol = this.state.playerCurrentLocation[0];
 		var playerCurrentRow = this.state.playerCurrentLocation[1];
+
+		// For testing health item
+		var healthItemCurrentCol = this.state.healthItemLocation[0];
+		var healthItemCurrentRow = this.state.healthItemLocation[1];
 
 		var mapRow;
 		var dungeonMap = [];
@@ -93,6 +95,9 @@ class DungeonMap extends Component {
 			for(var j=0; j<numCols; j++) {
 				if(i == playerCurrentRow && j == playerCurrentCol) {
 					mapRow.push(<MapSpace spaceType="player" />);
+				}
+				else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
+					mapRow.push(<MapSpace spaceType="health" />);
 				}
 				else {
 					mapRow.push(<MapSpace spaceType="empty" />);

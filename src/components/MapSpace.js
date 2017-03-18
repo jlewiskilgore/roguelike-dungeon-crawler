@@ -13,6 +13,13 @@ class MapSpace extends Component {
 				</div>
 			);
 		}
+		else if(this.props.spaceType == "health") {
+			return (
+				<div className="map-cell">
+				  <p>H</p>
+				</div>
+			);
+		}
 		else {
 			return (
 				<div className="map-cell">

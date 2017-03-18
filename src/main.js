@@ -37,7 +37,7 @@ class App extends Component {
 			  	  <HealthMeter playerHealth={this.state.playerHealth} />
 			  	</div>
 			  	<div id="dungeon-map">
-			      <DungeonMap numMapRows={20} numMapCols={20} updatePlayerHealth={this.updatePlayerHealth} />
+			      <DungeonMap numMapRows={20} numMapCols={60} updatePlayerHealth={this.updatePlayerHealth} />
 			    </div>
 			  </div>
 			);
