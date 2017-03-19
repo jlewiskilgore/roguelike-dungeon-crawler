@@ -9,7 +9,14 @@ class DungeonMap extends Component {
 		var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
 		var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
 
-		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], healthItemLocation: [3, 3], enemyLocation: [5, 16] };
+		/*
+		enemyList:
+		index 0: starting column location
+		index 1: starting row location
+		index 2: enemy's health
+		index 3: enemy's attack (how much damage is done with successful attack)
+		*/
+		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], playerAttack: 3, healthItemLocation: [3, 3], enemyList: [5, 16, 5, 1] };
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -51,6 +58,8 @@ class DungeonMap extends Component {
 		var newPlayerCol;
 		var newPlayerRow;
 
+		var isSpaceBlocked = 0;
+
 		// Update player's x-coordinate (column - left/right) position
 		if(moveX < 0 && currPlayerCol !== 0) {
 			newPlayerCol = currPlayerCol + moveX;
@@ -83,9 +92,13 @@ class DungeonMap extends Component {
 		var foundEnemy = this.isEnemyFound(newPlayerCol, newPlayerRow);
 		if(foundEnemy) {
 			console.log("Found enemy...");
+			// Fight enemy
+			isSpaceBlocked = this.attackEnemy();
 		}
 
-		this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] });
+		if(!isSpaceBlocked) {
+			this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] });
+		}
 	}
 
 	isHealthItemFound(spaceCol, spaceRow) {
@@ -106,7 +119,7 @@ class DungeonMap extends Component {
 	}
 
 	isEnemyFound(spaceCol, spaceRow) {
-		var enemy = this.state.enemyLocation;
+		var enemy = this.state.enemyList;
 
 		var enemyCol = enemy[0];
 		var enemyRow = enemy[1];
@@ -119,6 +132,39 @@ class DungeonMap extends Component {
 		}
 	}
 
+	attackEnemy() {
+		// Get random number
+		var attackWinner = Math.random();
+		console.log(attackWinner);
+
+		var opposingEnemy = this.state.enemyList;
+
+		// If number is greater than 0.5, Player wins round
+		if(attackWinner > 0.5) {
+			var playerAttack = this.state.playerAttack;
+			var enemyHealth = opposingEnemy[2];
+
+			var enemyNewHealth = enemyHealth - playerAttack;
+			
+			if(enemyNewHealth > 0) {
+				opposingEnemy[2] = enemyNewHealth;
+				this.setState({ enemyList: opposingEnemy });
+				return 1; // return 1 when enemy is still alive and blocking space
+			}
+			else {
+				this.setState({ enemyList: [] });
+				return 0; // return 1 when enemy is dead
+			}
+		}
+		// Else enemy wins round
+		else {
+			var enemyAttack = opposingEnemy[3];
+			var damageToPlayer = -1 * enemyAttack;
+			this.props.updatePlayerHealth(damageToPlayer);
+			return 1; // enemy is still alive
+		}
+	}
+
 	render() {
 		var playerCurrentCol = this.state.playerCurrentLocation[0];
 		var playerCurrentRow = this.state.playerCurrentLocation[1];
@@ -128,8 +174,8 @@ class DungeonMap extends Component {
 		var healthItemCurrentRow = this.state.healthItemLocation[1];
 
 		// For testing enemy location
-		var enemyCurrentCol = this.state.enemyLocation[0];
-		var enemyCurrentRow = this.state.enemyLocation[1];
+		var enemyCurrentCol = this.state.enemyList[0];
+		var enemyCurrentRow = this.state.enemyList[1];
 
 		var mapRow;
 		var dungeonMap = [];
