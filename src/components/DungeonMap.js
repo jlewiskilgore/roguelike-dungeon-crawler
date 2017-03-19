@@ -9,7 +9,7 @@ class DungeonMap extends Component {
 		var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
 		var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
 
-		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], healthItemLocation: [3, 3] };
+		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], healthItemLocation: [3, 3], enemyLocation: [5, 16] };
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -73,10 +73,16 @@ class DungeonMap extends Component {
 			newPlayerRow = currPlayerRow;
 		}
 
-		//Check if player moved to health item
+		//vCheck if player moved to health item
 		var foundHealth = this.isHealthItemFound(newPlayerCol, newPlayerRow);
 		if(foundHealth) {
 			this.props.updatePlayerHealth(foundHealth);
+		}
+
+		// Check if enemy was found
+		var foundEnemy = this.isEnemyFound(newPlayerCol, newPlayerRow);
+		if(foundEnemy) {
+			console.log("Found enemy...");
 		}
 
 		this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] });
@@ -99,6 +105,20 @@ class DungeonMap extends Component {
 		}
 	}
 
+	isEnemyFound(spaceCol, spaceRow) {
+		var enemy = this.state.enemyLocation;
+
+		var enemyCol = enemy[0];
+		var enemyRow = enemy[1];
+
+		if(spaceCol == enemyCol && spaceRow == enemyRow) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
 	render() {
 		var playerCurrentCol = this.state.playerCurrentLocation[0];
 		var playerCurrentRow = this.state.playerCurrentLocation[1];
@@ -106,6 +126,10 @@ class DungeonMap extends Component {
 		// For testing health item
 		var healthItemCurrentCol = this.state.healthItemLocation[0];
 		var healthItemCurrentRow = this.state.healthItemLocation[1];
+
+		// For testing enemy location
+		var enemyCurrentCol = this.state.enemyLocation[0];
+		var enemyCurrentRow = this.state.enemyLocation[1];
 
 		var mapRow;
 		var dungeonMap = [];
@@ -121,6 +145,9 @@ class DungeonMap extends Component {
 				}
 				else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
 					mapRow.push(<MapSpace spaceType="health" />);
+				}
+				else if(i == enemyCurrentRow && j == enemyCurrentCol) {
+					mapRow.push(<MapSpace spaceType="enemy" />);
 				}
 				else {
 					mapRow.push(<MapSpace spaceType="empty" />);

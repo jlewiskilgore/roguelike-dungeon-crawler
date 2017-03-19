@@ -20,6 +20,13 @@ class MapSpace extends Component {
 				</div>
 			);
 		}
+		else if(this.props.spaceType == "enemy") {
+			return(
+				<div className="map-cell">
+				  <p>E</p>
+				</div>
+			);
+		}
 		else {
 			return (
 				<div className="map-cell">
