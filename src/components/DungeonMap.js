@@ -5,9 +5,38 @@ class DungeonMap extends Component {
 	constructor(props) {
 		super(props);
 
+		// Random Starting positions for health items.
+		var mapStartingHealthItems = [];
+		// Random Starting positions for enenemies
+		var mapStartingEnemies = [];
 		// Set random starting position for player
-		var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
-		var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
+		var mapPlayerStartingPosition = [];
+		//var playerStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
+		//var playerStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
+		var randomStartingRow;
+		var randomStartingCol;
+		var newHealthItem;
+
+		while(mapPlayerStartingPosition.length == 0) {
+			randomStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
+			randomStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
+			newHealthItem = [];
+
+			if(mapStartingHealthItems.length <= this.props.numHealthItems) {
+				newHealthItem.push(randomStartingCol);
+				newHealthItem.push(randomStartingRow);
+				mapStartingHealthItems.push(newHealthItem);
+			}
+			//else if(mapStartingEnemies < this.props.numEnemies) {
+
+			//}
+			else {
+				mapPlayerStartingPosition = [randomStartingCol, randomStartingRow];
+			}
+		}
+
+		console.log(mapStartingHealthItems);
+		console.log("player starting position: " + mapPlayerStartingPosition);
 
 		/*
 		enemyList:
@@ -16,7 +45,13 @@ class DungeonMap extends Component {
 		index 2: enemy's health
 		index 3: enemy's attack (how much damage is done with successful attack)
 		*/
-		this.state = { playerCurrentLocation: [playerStartingCol, playerStartingRow], playerAttack: 3, healthItemLocation: [3, 3], enemyList: [5, 16, 5, 1] };
+		this.state = { 
+			playerCurrentLocation: mapPlayerStartingPosition, 
+			playerAttack: 3, 
+			healthItemLocations: mapStartingHealthItems, 
+			enemyList: [5, 16, 5, 1],
+			enemies: mapStartingEnemies
+		};
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -88,13 +123,14 @@ class DungeonMap extends Component {
 			this.props.updatePlayerHealth(foundHealth);
 		}
 
+		// TODO: Extend for multiple enemies
 		// Check if enemy was found
-		var foundEnemy = this.isEnemyFound(newPlayerCol, newPlayerRow);
-		if(foundEnemy) {
-			console.log("Found enemy...");
-			// Fight enemy
-			isSpaceBlocked = this.attackEnemy();
-		}
+		// var foundEnemy = this.isEnemyFound(newPlayerCol, newPlayerRow);
+		// if(foundEnemy) {
+		// 	console.log("Found enemy...");
+		// 	// Fight enemy
+		// 	isSpaceBlocked = this.attackEnemy();
+		// }
 
 		if(!isSpaceBlocked) {
 			this.setState({ playerCurrentLocation: [newPlayerCol, newPlayerRow] });
@@ -102,20 +138,25 @@ class DungeonMap extends Component {
 	}
 
 	isHealthItemFound(spaceCol, spaceRow) {
-		var healthItem = this.state.healthItemLocation;
+		var healthItem;
+		var healthItemCol;
+		var healthItemRow;
 
-		if(healthItem !== []) {
-			var healthItemCol = healthItem[0];
-			var healthItemRow = healthItem[1];
+		for(var i=0; i<this.state.healthItemLocations.length; i++) {
+			var healthItem = this.state.healthItemLocations[i];
+
+			if(healthItem !== []) {
+				var healthItemCol = healthItem[0];
+				var healthItemRow = healthItem[1];
+			}
+
+			if(spaceCol == healthItemCol && spaceRow == healthItemRow) {
+				this.setState({ healthItemLocations: [] });
+				return 10; // Health item increases player's health by 10
+			}
 		}
 
-		if(spaceCol == healthItemCol && spaceRow == healthItemRow) {
-			this.setState({ healthItemLocation: [] });
-			return 10; // Health item increases player's health by 10
-		}
-		else {
-			return 0; // no health item found
-		}
+		return 0; // no health item found
 	}
 
 	isEnemyFound(spaceCol, spaceRow) {
@@ -165,13 +206,32 @@ class DungeonMap extends Component {
 		}
 	}
 
+	includesHealthItem(row, col) {
+		var healthItems = this.state.healthItemLocations;
+		var currentItem;
+
+		for(var i=0; i < healthItems.length; i++) {
+			currentItem = healthItems[i];
+
+			if(currentItem[0] == col && currentItem[1] == row) {
+				return 1;
+			}
+		}
+
+		return 0; // None found
+	}
+
 	render() {
 		var playerCurrentCol = this.state.playerCurrentLocation[0];
 		var playerCurrentRow = this.state.playerCurrentLocation[1];
 
 		// For testing health item
-		var healthItemCurrentCol = this.state.healthItemLocation[0];
-		var healthItemCurrentRow = this.state.healthItemLocation[1];
+		var healthItem;
+		var healthItemCurrentCol;
+		var healthItemCurrentRow;
+		var healthItemIndex;
+		var mapHealthItems = this.state.healthItemLocations;
+		var healthItemFound;
 
 		// For testing enemy location
 		var enemyCurrentCol = this.state.enemyList[0];
@@ -189,7 +249,12 @@ class DungeonMap extends Component {
 				if(i == playerCurrentRow && j == playerCurrentCol) {
 					mapRow.push(<MapSpace spaceType="player" />);
 				}
-				else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
+				//else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
+				else if(this.includesHealthItem(i, j)) {
+					//healthItemIndex.indexOf([i, j]);
+					//healthItem = this.state.healthItemLocations[healthItemIndex];
+					//healthItemRow = healthItem[0];
+					//healthItemCol = healthItem[1];
 					mapRow.push(<MapSpace spaceType="health" />);
 				}
 				else if(i == enemyCurrentRow && j == enemyCurrentCol) {
