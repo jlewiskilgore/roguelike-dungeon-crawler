@@ -15,27 +15,30 @@ class DungeonMap extends Component {
 		var randomStartingRow;
 		var randomStartingCol;
 		var newHealthItem;
+		var newEnemy;
 
 		while(mapPlayerStartingPosition.length == 0) {
 			randomStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
 			randomStartingCol = Math.floor(Math.random() * (this.props.numMapCols));
-			newHealthItem = [];
 
 			if(mapStartingHealthItems.length < this.props.numHealthItems) {
+				newHealthItem = [];
 				newHealthItem.push(randomStartingCol);
 				newHealthItem.push(randomStartingRow);
 				mapStartingHealthItems.push(newHealthItem);
 			}
-			//else if(mapStartingEnemies < this.props.numEnemies) {
-
-			//}
+			else if(mapStartingEnemies.length < this.props.numEnemies) {
+				newEnemy = [];
+				newEnemy.push(randomStartingCol);
+				newEnemy.push(randomStartingRow);
+				mapStartingEnemies.push(newEnemy);
+			}
 			else {
 				mapPlayerStartingPosition = [randomStartingCol, randomStartingRow];
 			}
 		}
 
-		console.log(mapStartingHealthItems);
-		console.log("player starting position: " + mapPlayerStartingPosition);
+		console.log(mapStartingEnemies);
 
 		/*
 		enemyList:
@@ -48,7 +51,7 @@ class DungeonMap extends Component {
 			playerCurrentLocation: mapPlayerStartingPosition, 
 			playerAttack: 3, 
 			healthItemLocations: mapStartingHealthItems, 
-			enemyList: [5, 16, 5, 1],
+			enemyList: mapStartingEnemies,
 			enemies: mapStartingEnemies
 		};
 	
@@ -202,8 +205,8 @@ class DungeonMap extends Component {
 		}
 	}
 
-	includesHealthItem(row, col) {
-		var healthItems = this.state.healthItemLocations;
+	includesItem(row, col, stateList) {
+		var healthItems = stateList;
 		var currentItem;
 
 		for(var i=0; i < healthItems.length; i++) {
@@ -246,10 +249,10 @@ class DungeonMap extends Component {
 					mapRow.push(<MapSpace spaceType="player" />);
 				}
 				//else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
-				else if(this.includesHealthItem(i, j)) {
+				else if(this.includesItem(i, j, this.state.healthItemLocations)) {
 					mapRow.push(<MapSpace spaceType="health" />);
 				}
-				else if(i == enemyCurrentRow && j == enemyCurrentCol) {
+				else if(this.includesItem(i, j, this.state.enemyList)) {
 					mapRow.push(<MapSpace spaceType="enemy" />);
 				}
 				else {
