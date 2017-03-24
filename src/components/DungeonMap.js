@@ -260,7 +260,9 @@ class DungeonMap extends Component {
 				else {
 					this.setState({ bossEnemy: [] });
 
-					return 0; // return 0 when boss is dead
+					this.props.updateGameStatus(1); // Boss is dead, Game is over
+
+					return -1; // return 0 when boss is dead
 				}
 			}
 		}

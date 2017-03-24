@@ -8,10 +8,11 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { playerHealth: 10, playerXp: 0, playerLevel: 1, isPlayerAlive: true };
+		this.state = { isBossDead: 0, playerHealth: 10, playerXp: 0, playerLevel: 1, isPlayerAlive: true };
 
 		this.updatePlayerHealth = this.updatePlayerHealth.bind(this);
 		this.updatePlayerXp = this.updatePlayerXp.bind(this);
+		this.updateGameStatus = this.updateGameStatus.bind(this);
 	}
 
 	updatePlayerHealth(healthModification) {
@@ -45,10 +46,26 @@ class App extends Component {
 		}
 	}
 
+	updateGameStatus(isGameOver) {
+		if(isGameOver) {
+			this.setState({ isBossDead: 1 });
+		}
+	}
+
 	render() {
 		var playerIsAlive = this.state.isPlayerAlive;
+		var isBossDead = this.state.isBossDead;
 
-		if(playerIsAlive) {
+		if(isBossDead) {
+			return(
+			  <div id="dungeon-main-component">
+				<h1>THE BOSS IS DEAD!!!</h1>
+				<br/>
+				<h1>YOU WIN!</h1>
+			  </div>
+			);
+		}
+		else if(playerIsAlive) {
 			return (
 			  <div id="dungeon-main-component">
 			    <div id="main-health-meter">
@@ -64,12 +81,13 @@ class App extends Component {
 			      	numEnemies={5}
 			      	playerLevel={this.state.playerLevel}
 			      	updatePlayerHealth={this.updatePlayerHealth}
-			      	updatePlayerXp={this.updatePlayerXp} />
+			      	updatePlayerXp={this.updatePlayerXp}
+			      	updateGameStatus={this.updateGameStatus} />
 			    </div>
 			  </div>
 			);
 		}
-		else {
+		else if(!playerIsAlive) {
 			return (
 			  <div id="dungeon-main-component">
 				<h1>PLAYER IS DEAD!</h1>
@@ -78,6 +96,7 @@ class App extends Component {
 			  </div>
 			);
 		}
+
 	}
 }
 
