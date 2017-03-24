@@ -8,9 +8,10 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { playerHealth: 10, isPlayerAlive: true };
+		this.state = { playerHealth: 10, playerXp: 0, playerLevel: 1, isPlayerAlive: true };
 
 		this.updatePlayerHealth = this.updatePlayerHealth.bind(this);
+		this.updatePlayerXp = this.updatePlayerXp.bind(this);
 	}
 
 	updatePlayerHealth(healthModification) {
@@ -27,6 +28,23 @@ class App extends Component {
 		}
 	}
 
+	updatePlayerXp(xpModification) {
+		var currentPlayerXp = this.state.playerXp;
+		var currentPlayerLevel = this.state.playerLevel;
+		var xpForNextLevel = (currentPlayerLevel) * 10;
+
+		// Add new xp to player's xp
+		currentPlayerXp = currentPlayerXp + xpModification;
+
+		// Check if player goes up a level
+		if(currentPlayerXp >= xpForNextLevel) {
+			this.setState({ playerLevel: currentPlayerLevel + 1, playerXp: currentPlayerXp });
+		}
+		else {
+			this.setState({ playerXp: currentPlayerXp });
+		}
+	}
+
 	render() {
 		var playerIsAlive = this.state.isPlayerAlive;
 
@@ -35,6 +53,8 @@ class App extends Component {
 			  <div id="dungeon-main-component">
 			    <div id="main-health-meter">
 			  	  <StatMeter statLabel={"Health"} playerStat={this.state.playerHealth} />
+			  	  <StatMeter statLabel={"XP"} playerStat={this.state.playerXp} />
+			  	  <StatMeter statLabel={"Level"} playerStat={this.state.playerLevel} />
 			  	</div>
 			  	<div id="dungeon-map">
 			      <DungeonMap 
@@ -42,7 +62,8 @@ class App extends Component {
 			      	numMapCols={60} 
 			      	numHealthItems={3}
 			      	numEnemies={5}
-			      	updatePlayerHealth={this.updatePlayerHealth} />
+			      	updatePlayerHealth={this.updatePlayerHealth}
+			      	updatePlayerXp={this.updatePlayerXp} />
 			    </div>
 			  </div>
 			);

@@ -205,6 +205,10 @@ class DungeonMap extends Component {
 			else {
 				updatedEnemyList.splice(foundEnemy, 1);
 				this.setState({ enemyList: updatedEnemyList });
+
+				// FOR TESTING UPDATING PLAYER XP/LEVEL
+				this.props.updatePlayerXp(9); // player's xp goes up by 9
+
 				return 0; // return 0 when enemy is dead
 			}
 		}
