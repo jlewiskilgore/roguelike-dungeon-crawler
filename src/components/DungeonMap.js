@@ -47,11 +47,10 @@ class DungeonMap extends Component {
 			}
 		}
 
-		console.log(mapStartingEnemies);
-
 		this.state = { 
 			playerCurrentLocation: mapPlayerStartingPosition, 
-			playerAttack: 3, 
+			playerAttack: 3,
+			playerXP: 0, 
 			healthItemLocations: mapStartingHealthItems, 
 			enemyList: mapStartingEnemies,
 			enemies: mapStartingEnemies
@@ -236,18 +235,6 @@ class DungeonMap extends Component {
 	render() {
 		var playerCurrentCol = this.state.playerCurrentLocation[0];
 		var playerCurrentRow = this.state.playerCurrentLocation[1];
-
-		// For testing health item
-		var healthItem;
-		var healthItemCurrentCol;
-		var healthItemCurrentRow;
-		var healthItemIndex;
-		var mapHealthItems = this.state.healthItemLocations;
-		var healthItemFound;
-
-		// For testing enemy location
-		var enemyCurrentCol = this.state.enemyList[0];
-		var enemyCurrentRow = this.state.enemyList[1];
 
 		var mapRow;
 		var dungeonMap = [];

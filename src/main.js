@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import DungeonMap from './components/DungeonMap';
-import HealthMeter from './components/HealthMeter';
+import StatMeter from './components/StatMeter';
 import './App.sass';
 
 class App extends Component {
@@ -34,7 +34,7 @@ class App extends Component {
 			return (
 			  <div id="dungeon-main-component">
 			    <div id="main-health-meter">
-			  	  <HealthMeter playerHealth={this.state.playerHealth} />
+			  	  <StatMeter statLabel={"Health"} playerStat={this.state.playerHealth} />
 			  	</div>
 			  	<div id="dungeon-map">
 			      <DungeonMap 
