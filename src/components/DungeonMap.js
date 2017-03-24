@@ -9,6 +9,8 @@ class DungeonMap extends Component {
 		var mapStartingHealthItems = [];
 		// Random Starting positions for enenemies
 		var mapStartingEnemies = [];
+		// Set random starting position for boss enemy
+		var mapStartingBoss = [];
 		// Set random starting position for player
 		var mapPlayerStartingPosition = [];
 
@@ -16,6 +18,7 @@ class DungeonMap extends Component {
 		var randomStartingCol;
 		var newHealthItem;
 		var newEnemy;
+		var newBossEnemy;
 
 		while(mapPlayerStartingPosition.length == 0) {
 			randomStartingRow = Math.floor(Math.random() * (this.props.numMapRows));
@@ -42,6 +45,21 @@ class DungeonMap extends Component {
 				newEnemy.push(2); // Enemy's attack
 				mapStartingEnemies.push(newEnemy);
 			}
+			/*
+			BOSS ENEMY:
+			index 0: starting column location
+			index 1: starting row location
+			index 2: enemy's health
+			index 3: enemy's attack
+			*/
+			else if(mapStartingBoss.length == 0) {
+				newBossEnemy = [];
+				newBossEnemy.push(randomStartingCol);
+				newBossEnemy.push(randomStartingRow);
+				newBossEnemy.push(1); // Boss' Health
+				newBossEnemy.push(5); // Boss' Attack
+				mapStartingBoss.push(newBossEnemy);
+			}
 			else {
 				mapPlayerStartingPosition = [randomStartingCol, randomStartingRow];
 			}
@@ -53,8 +71,11 @@ class DungeonMap extends Component {
 			playerXP: 0, 
 			healthItemLocations: mapStartingHealthItems, 
 			enemyList: mapStartingEnemies,
-			enemies: mapStartingEnemies
+			enemies: mapStartingEnemies,
+			bossEnemy: mapStartingBoss
 		};
+
+		console.log(mapStartingBoss);
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -123,8 +144,10 @@ class DungeonMap extends Component {
 
 		// Check if enemy was found
 		var foundEnemy = this.isEnemyFound(newPlayerCol, newPlayerRow);
-		if(foundEnemy >= 0) {
-			console.log("Found enemy...");
+		if(foundEnemy === "boss") {
+			isSpaceBlocked = this.attackEnemy(foundEnemy);
+		}
+		else if(foundEnemy >= 0) {
 			// Fight enemy at the space player is trying to move to
 			isSpaceBlocked = this.attackEnemy(foundEnemy);
 		}
@@ -164,6 +187,8 @@ class DungeonMap extends Component {
 		var enemyCol;
 		var enemyRow;
 
+		var bossEnemy = this.state.bossEnemy;
+
 		for(var i=0; i<enemiesOnMap.length; i++) {
 			var enemy = enemiesOnMap[i];
 
@@ -177,39 +202,66 @@ class DungeonMap extends Component {
 			}
 		}
 
-		return -1; // no health item found
+		// Check if found Boss Enemy
+		if(bossEnemy.length > 0 && spaceCol == bossEnemy[0][0] && spaceRow == bossEnemy[0][1]) {
+			return "boss";
+		}
+
+		return -1; // no enemy found
 	}
 
 	attackEnemy(foundEnemy) {
 		// Get random number
 		var attackWinner = Math.random();
 
-		var opposingEnemy = this.state.enemyList[foundEnemy];
+		if(foundEnemy === 'boss') {
+			var opposingEnemy = this.state.bossEnemy[0];
+		}
+		else {
+			var opposingEnemy = this.state.enemyList[foundEnemy];
+		}
 
 		// If number is greater than 0.5, Player wins round
 		if(attackWinner > 0.5) {
 			var playerAttack = this.state.playerAttack;
 			var enemyHealth = opposingEnemy[2];
-
-			var updatedEnemyList = this.state.enemyList;
 			var enemyNewHealth = enemyHealth - playerAttack;
-			
-			if(enemyNewHealth > 0) {
-				opposingEnemy[2] = enemyNewHealth;
-				updatedEnemyList[foundEnemy] = opposingEnemy;
 
-				this.setState({ enemyList: updatedEnemyList });
+			if(foundEnemy !== 'boss') {
+				var updatedEnemyList = this.state.enemyList;
+				if(enemyNewHealth > 0) {
+					opposingEnemy[2] = enemyNewHealth;
+					updatedEnemyList[foundEnemy] = opposingEnemy;
 
-				return 1; // return 1 when enemy is still alive and blocking space
+					this.setState({ enemyList: updatedEnemyList });
+
+					return 1; // return 1 when enemy is still alive and blocking space
+				}
+				else {
+					updatedEnemyList.splice(foundEnemy, 1);
+					this.setState({ enemyList: updatedEnemyList });
+
+					// FOR TESTING UPDATING PLAYER XP/LEVEL
+					this.props.updatePlayerXp(9); // player's xp goes up by 9
+
+					return 0; // return 0 when enemy is dead
+				}
 			}
-			else {
-				updatedEnemyList.splice(foundEnemy, 1);
-				this.setState({ enemyList: updatedEnemyList });
+			else if(foundEnemy === 'boss') {
+				var updatedBossEnemy = this.state.bossEnemy;
+				if(enemyNewHealth > 0) {
+					opposingEnemy[2] = enemyNewHealth;
+					updatedBossEnemy[0] = opposingEnemy;
 
-				// FOR TESTING UPDATING PLAYER XP/LEVEL
-				this.props.updatePlayerXp(9); // player's xp goes up by 9
+					this.setState({ bossEnemy: updatedBossEnemy });
 
-				return 0; // return 0 when enemy is dead
+					return 1; // return 1 when boss is still alive and blocking space
+				}
+				else {
+					this.setState({ bossEnemy: [] });
+
+					return 0; // return 0 when boss is dead
+				}
 			}
 		}
 		// Else enemy wins round
@@ -222,11 +274,11 @@ class DungeonMap extends Component {
 	}
 
 	includesItem(row, col, stateList) {
-		var healthItems = stateList;
+		var itemList = stateList;
 		var currentItem;
 
-		for(var i=0; i < healthItems.length; i++) {
-			currentItem = healthItems[i];
+		for(var i=0; i < itemList.length; i++) {
+			currentItem = itemList[i];
 
 			if(currentItem[0] == col && currentItem[1] == row) {
 				return 1;
@@ -252,7 +304,9 @@ class DungeonMap extends Component {
 				if(i == playerCurrentRow && j == playerCurrentCol) {
 					mapRow.push(<MapSpace spaceType="player" />);
 				}
-				//else if(i == healthItemCurrentRow && j == healthItemCurrentCol) {
+				else if(this.includesItem(i, j, this.state.bossEnemy)) {
+					mapRow.push(<MapSpace spaceType="boss" />);
+				}
 				else if(this.includesItem(i, j, this.state.healthItemLocations)) {
 					mapRow.push(<MapSpace spaceType="health" />);
 				}

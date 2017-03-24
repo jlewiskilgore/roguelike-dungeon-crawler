@@ -62,6 +62,7 @@ class App extends Component {
 			      	numMapCols={60} 
 			      	numHealthItems={3}
 			      	numEnemies={5}
+			      	playerLevel={this.state.playerLevel}
 			      	updatePlayerHealth={this.updatePlayerHealth}
 			      	updatePlayerXp={this.updatePlayerXp} />
 			    </div>
