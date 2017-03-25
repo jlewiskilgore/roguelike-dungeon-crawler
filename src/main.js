@@ -82,7 +82,7 @@ class App extends Component {
 			  	</div>
 			  	<div id="dungeon-map">
 			      <DungeonMap 
-			      	numMapRows={20} 
+			      	numMapRows={30} 
 			      	numMapCols={60} 
 			      	numHealthItems={3}
 			      	numEnemies={5}

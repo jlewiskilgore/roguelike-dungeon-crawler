@@ -290,7 +290,6 @@ class DungeonMap extends Component {
 				return 1;
 			}
 		}
-
 		return 0; // None found
 	}
 
@@ -311,8 +310,8 @@ class DungeonMap extends Component {
 					mapRow.push(<MapSpace spaceType="player" />);
 				}
 				// Show actual space type
-				else if((i <= (playerCurrentRow+2) && i >= (playerCurrentRow-2)) &&
-						(j <= (playerCurrentCol+2) && j >= (playerCurrentCol-2))) {
+				else if((i <= (playerCurrentRow+3) && i >= (playerCurrentRow-3)) &&
+						(j <= (playerCurrentCol+3) && j >= (playerCurrentCol-3))) {
 					
 					if(this.includesItem(i, j, this.state.bossEnemy)) {
 						mapRow.push(<MapSpace spaceType="boss" />);
@@ -331,7 +330,6 @@ class DungeonMap extends Component {
 				else {
 					mapRow.push(<MapSpace spaceType="hidden" />);
 				}
-				
 			}
 			dungeonMap.push(<div className="map-row">{mapRow}</div>);
 		}
