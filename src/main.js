@@ -8,7 +8,14 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { isBossDead: 0, playerHealth: 10, playerXp: 0, playerLevel: 1, isPlayerAlive: true };
+		this.state = { 
+			isBossDead: 0, 
+			playerHealth: 10, 
+			playerXp: 0, 
+			playerLevel: 1,
+			playerLevelAttackBonus: 2, 
+			isPlayerAlive: true 
+		};
 
 		this.updatePlayerHealth = this.updatePlayerHealth.bind(this);
 		this.updatePlayerXp = this.updatePlayerXp.bind(this);
@@ -82,6 +89,7 @@ class App extends Component {
 			      	playerLevel={this.state.playerLevel}
 			      	updatePlayerHealth={this.updatePlayerHealth}
 			      	updatePlayerXp={this.updatePlayerXp}
+			      	playerLevelAttackBonus={this.state.playerLevelAttackBonus}
 			      	updateGameStatus={this.updateGameStatus} />
 			    </div>
 			  </div>

@@ -56,7 +56,7 @@ class DungeonMap extends Component {
 				newBossEnemy = [];
 				newBossEnemy.push(randomStartingCol);
 				newBossEnemy.push(randomStartingRow);
-				newBossEnemy.push(1); // Boss' Health
+				newBossEnemy.push(40); // Boss' Health
 				newBossEnemy.push(5); // Boss' Attack
 				mapStartingBoss.push(newBossEnemy);
 			}
@@ -224,6 +224,10 @@ class DungeonMap extends Component {
 		// If number is greater than 0.5, Player wins round
 		if(attackWinner > 0.5) {
 			var playerAttack = this.state.playerAttack;
+			var playerAttackBonus = (this.props.playerLevel - 1) *
+									this.props.playerLevelAttackBonus;
+			playerAttack = playerAttack + playerAttackBonus;
+
 			var enemyHealth = opposingEnemy[2];
 			var enemyNewHealth = enemyHealth - playerAttack;
 
