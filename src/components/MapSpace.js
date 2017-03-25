@@ -13,6 +13,13 @@ class MapSpace extends Component {
 				</div>
 			);
 		}
+		else if(this.props.spaceType == "hidden") {
+			return (
+				<div className="map-cell">
+				  <p>*</p>
+				</div>
+			);
+		}
 		else if(this.props.spaceType == "boss") {
 			return (
 				<div className="map-cell">

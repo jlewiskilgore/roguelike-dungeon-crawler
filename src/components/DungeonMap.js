@@ -310,18 +310,28 @@ class DungeonMap extends Component {
 				if(i == playerCurrentRow && j == playerCurrentCol) {
 					mapRow.push(<MapSpace spaceType="player" />);
 				}
-				else if(this.includesItem(i, j, this.state.bossEnemy)) {
-					mapRow.push(<MapSpace spaceType="boss" />);
+				// Show actual space type
+				else if((i <= (playerCurrentRow+2) && i >= (playerCurrentRow-2)) &&
+						(j <= (playerCurrentCol+2) && j >= (playerCurrentCol-2))) {
+					
+					if(this.includesItem(i, j, this.state.bossEnemy)) {
+						mapRow.push(<MapSpace spaceType="boss" />);
+					}
+					else if(this.includesItem(i, j, this.state.healthItemLocations)) {
+						mapRow.push(<MapSpace spaceType="health" />);
+					}
+					else if(this.includesItem(i, j, this.state.enemyList)) {
+						mapRow.push(<MapSpace spaceType="enemy" />);
+					}
+					else {
+						mapRow.push(<MapSpace spaceType="empty" />);
+					}
 				}
-				else if(this.includesItem(i, j, this.state.healthItemLocations)) {
-					mapRow.push(<MapSpace spaceType="health" />);
-				}
-				else if(this.includesItem(i, j, this.state.enemyList)) {
-					mapRow.push(<MapSpace spaceType="enemy" />);
-				}
+				// Show hidden space type
 				else {
-					mapRow.push(<MapSpace spaceType="empty" />);
+					mapRow.push(<MapSpace spaceType="hidden" />);
 				}
+				
 			}
 			dungeonMap.push(<div className="map-row">{mapRow}</div>);
 		}
