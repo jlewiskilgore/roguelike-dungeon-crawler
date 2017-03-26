@@ -5,8 +5,10 @@ class DungeonMap extends Component {
 	constructor(props) {
 		super(props);
 
-		// Random Starting positions for health items.
+		// Random Starting positions for health items
 		var mapStartingHealthItems = [];
+		// Random Starting positions for weapon items
+		var mapStartingWeaponItems = [];
 		// Random Starting positions for enenemies
 		var mapStartingEnemies = [];
 		// Set random starting position for boss enemy
@@ -17,6 +19,7 @@ class DungeonMap extends Component {
 		var randomStartingRow;
 		var randomStartingCol;
 		var newHealthItem;
+		var newWeaponItem;
 		var newEnemy;
 		var newBossEnemy;
 
@@ -60,6 +63,20 @@ class DungeonMap extends Component {
 				newBossEnemy.push(5); // Boss' Attack
 				mapStartingBoss.push(newBossEnemy);
 			}
+			//Weapon Upgrades
+			else if(mapStartingWeaponItems.length  < 2) {
+				newWeaponItem = [];
+				newWeaponItem.push(randomStartingCol);
+				newWeaponItem.push(randomStartingRow);
+
+				if(mapStartingWeaponItems.length == 0) {
+					newWeaponItem.push("Steel");
+				}
+				else {
+					newWeaponItem.push("Sharpened");
+				}
+				mapStartingWeaponItems.push(newWeaponItem);
+			}
 			else {
 				mapPlayerStartingPosition = [randomStartingCol, randomStartingRow];
 			}
@@ -69,13 +86,12 @@ class DungeonMap extends Component {
 			playerCurrentLocation: mapPlayerStartingPosition, 
 			playerAttack: 3,
 			playerXP: 0, 
-			healthItemLocations: mapStartingHealthItems, 
+			healthItemLocations: mapStartingHealthItems,
+			weaponItemLocations: mapStartingWeaponItems,
 			enemyList: mapStartingEnemies,
 			enemies: mapStartingEnemies,
 			bossEnemy: mapStartingBoss
 		};
-
-		console.log(mapStartingBoss);
 	
 		this.handlePlayerMove = this.handlePlayerMove.bind(this);
 		this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
@@ -137,9 +153,17 @@ class DungeonMap extends Component {
 		}
 
 		// Check if player moved to health item
-		var foundHealth = this.isHealthItemFound(newPlayerCol, newPlayerRow);
+		var foundHealth = this.isItemFound(newPlayerCol, newPlayerRow, 
+			this.state.healthItemLocations, "health");
 		if(foundHealth) {
 			this.props.updatePlayerHealth(foundHealth);
+		}
+
+		// Check if player moved to a weapon item
+		var foundWeapon = this.isItemFound(newPlayerCol, newPlayerRow,
+			this.state.weaponItemLocations, "weapon");
+		if(foundWeapon) {
+			this.props.updatePlayerWeapon(foundWeapon);
 		}
 
 		// Check if enemy was found
@@ -157,24 +181,35 @@ class DungeonMap extends Component {
 		}
 	}
 
-	isHealthItemFound(spaceCol, spaceRow) {
-		var healthItem;
-		var healthItemsOnMap = this.state.healthItemLocations;
-		var healthItemCol;
-		var healthItemRow;
+	isItemFound(spaceCol, spaceRow, itemList, itemListType) {
+		var item;
+		var foundItemType;
+		var itemsOnMap = itemList;
+		var itemCol;
+		var itemRow;
 
-		for(var i=0; i<healthItemsOnMap.length; i++) {
-			var healthItem = healthItemsOnMap[i];
+		for(var i=0; i<itemsOnMap.length; i++) {
+			var item = itemsOnMap[i];
 
-			if(healthItem !== []) {
-				var healthItemCol = healthItem[0];
-				var healthItemRow = healthItem[1];
+			if(item !== []) {
+				var itemCol = item[0];
+				var itemRow = item[1];
 			}
 
-			if(spaceCol == healthItemCol && spaceRow == healthItemRow) {
-				healthItemsOnMap.splice(i, 1);
-				this.setState({ healthItemLocations: healthItemsOnMap });
-				return 10; // Health item increases player's health by 10
+			if(spaceCol == itemCol && spaceRow == itemRow) {
+				if(itemListType == "health") {
+					itemsOnMap.splice(i, 1);
+					this.setState({ healthItemLocations: itemsOnMap });
+					return 10; // Health item increases player's health by 10
+				}
+				else if(itemListType == "weapon") {
+					// Weapon type stored in index 2
+					foundItemType = itemsOnMap[i][2];
+					console.log(foundItemType);
+					itemsOnMap.splice(i, 1);
+					this.setState({ weaponItemLocations: itemsOnMap})
+					return foundItemType;
+				}
 			}
 		}
 
@@ -318,6 +353,9 @@ class DungeonMap extends Component {
 					}
 					else if(this.includesItem(i, j, this.state.healthItemLocations)) {
 						mapRow.push(<MapSpace spaceType="health" />);
+					}
+					else if(this.includesItem(i, j, this.state.weaponItemLocations)) {
+						mapRow.push(<MapSpace spaceType="weapon" />);
 					}
 					else if(this.includesItem(i, j, this.state.enemyList)) {
 						mapRow.push(<MapSpace spaceType="enemy" />);
