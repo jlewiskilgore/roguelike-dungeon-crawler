@@ -59,7 +59,7 @@ class DungeonMap extends Component {
 				newBossEnemy = [];
 				newBossEnemy.push(randomStartingCol);
 				newBossEnemy.push(randomStartingRow);
-				newBossEnemy.push(40); // Boss' Health
+				newBossEnemy.push(75); // Boss' Health
 				newBossEnemy.push(5); // Boss' Attack
 				mapStartingBoss.push(newBossEnemy);
 			}
@@ -205,7 +205,7 @@ class DungeonMap extends Component {
 				else if(itemListType == "weapon") {
 					// Weapon type stored in index 2
 					foundItemType = itemsOnMap[i][2];
-					console.log(foundItemType);
+					
 					itemsOnMap.splice(i, 1);
 					this.setState({ weaponItemLocations: itemsOnMap})
 					return foundItemType;
@@ -260,7 +260,9 @@ class DungeonMap extends Component {
 		if(attackWinner > 0.5) {
 			var playerAttack = this.state.playerAttack;
 			var playerAttackBonus = (this.props.playerLevel - 1) *
-									this.props.playerLevelAttackBonus;
+									this.props.playerLevelAttackBonus
+									+ this.props.playerWeaponAttackBonus;
+
 			playerAttack = playerAttack + playerAttackBonus;
 
 			var enemyHealth = opposingEnemy[2];

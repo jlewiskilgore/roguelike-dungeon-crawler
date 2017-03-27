@@ -82,8 +82,6 @@ class App extends Component {
 
 			this.setState({ playerWeapon: newPlayerWeapon, playerWeaponAttackBonus: newPlayerWeaponBonus });
 		}
-		console.log(weaponUpgrade);
-		console.log(newPlayerWeaponBonus);
 	}
 
 	updateGameStatus(isGameOver) {
