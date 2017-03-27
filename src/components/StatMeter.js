@@ -7,7 +7,7 @@ class StatMeter extends Component {
 
 	render() {
 		return (
-			<h3>Player's {this.props.statLabel}: {this.props.playerStat}</h3>
+			<p>Player's {this.props.statLabel}: {this.props.playerStat}</p>
 		);
 	}
 }

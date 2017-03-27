@@ -59,14 +59,20 @@ class App extends Component {
 	updatePlayerWeapon(weaponUpgrade) {
 		var currentPlayerWeapon = this.state.playerWeapon;
 		var newPlayerWeapon;
+		var currentPlayerWeaponBonus = this.state.playerWeaponAttackBonus;
+		var newPlayerWeaponBonus;
 
 		if(weaponUpgrade == "Sharpened") {
 			newPlayerWeapon = weaponUpgrade + " " + currentPlayerWeapon;
-			this.setState({ playerWeapon: newPlayerWeapon });
+			newPlayerWeaponBonus = currentPlayerWeaponBonus + 2;
+
+			this.setState({ playerWeapon: newPlayerWeapon, playerWeaponAttackBonus: newPlayerWeaponBonus });
 		}
 		else if(weaponUpgrade == "Steel" && currentPlayerWeapon.includes("Wooden")) {
 			currentPlayerWeapon = currentPlayerWeapon.split(" ");
 			newPlayerWeapon = currentPlayerWeapon[0];
+
+			newPlayerWeaponBonus = currentPlayerWeaponBonus + 5;
 			
 			for(var i=1; i<currentPlayerWeapon.length-2; i++) {
 				newPlayerWeapon = newPlayerWeapon + " " + currentPlayerWeapon[i];
@@ -74,8 +80,10 @@ class App extends Component {
 			newPlayerWeapon = newPlayerWeapon + " " 
 				+ weaponUpgrade + " Sword"; 
 
-			this.setState({ playerWeapon: newPlayerWeapon });
+			this.setState({ playerWeapon: newPlayerWeapon, playerWeaponAttackBonus: newPlayerWeaponBonus });
 		}
+		console.log(weaponUpgrade);
+		console.log(newPlayerWeaponBonus);
 	}
 
 	updateGameStatus(isGameOver) {
@@ -108,7 +116,7 @@ class App extends Component {
 			  	</div>
 			  	<div id="dungeon-map">
 			      <DungeonMap 
-			      	numMapRows={30} 
+			      	numMapRows={25} 
 			      	numMapCols={60} 
 			      	numHealthItems={3}
 			      	numEnemies={5}
