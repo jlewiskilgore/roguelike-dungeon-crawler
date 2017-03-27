@@ -65,9 +65,14 @@ class App extends Component {
 			this.setState({ playerWeapon: newPlayerWeapon });
 		}
 		else if(weaponUpgrade == "Steel" && currentPlayerWeapon.includes("Wooden")) {
-			newPlayerWeapon = currentPlayerWeapon.split(" ");
-
-			newPlayerWeapon[currentPlayerWeapon.length - 1] = weaponUpgrade;
+			currentPlayerWeapon = currentPlayerWeapon.split(" ");
+			newPlayerWeapon = currentPlayerWeapon[0];
+			
+			for(var i=1; i<currentPlayerWeapon.length-2; i++) {
+				newPlayerWeapon = newPlayerWeapon + " " + currentPlayerWeapon[i];
+			}
+			newPlayerWeapon = newPlayerWeapon + " " 
+				+ weaponUpgrade + " Sword"; 
 
 			this.setState({ playerWeapon: newPlayerWeapon });
 		}
