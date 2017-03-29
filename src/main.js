@@ -106,7 +106,7 @@ class App extends Component {
 		else if(playerIsAlive) {
 			return (
 			  <div id="dungeon-main-component">
-			    <div id="main-health-meter">
+			    <div id="main-player-stat-meters">
 			  	  <StatMeter statLabel={"Health"} playerStat={this.state.playerHealth} />
 			  	  <StatMeter statLabel={"XP"} playerStat={this.state.playerXp} />
 			  	  <StatMeter statLabel={"Level"} playerStat={this.state.playerLevel} />
